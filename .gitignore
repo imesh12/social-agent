@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+storage/*.db
+storage/*.db-*
+storage/audio/*.mp3
+storage/videos/*.mp4
+storage/subtitles/*.srt
+storage/thumbnails/*.jpg
+storage/uploads/*.json
+storage/logs/*.log
+storage/generated/*.json
+storage/temp/*

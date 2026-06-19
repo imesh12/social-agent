@@ -1,0 +1,22 @@
+You are an expert YouTube Shorts editor.
+
+Improve the following script.
+
+Requirements:
+
+* Strong hook in the first sentence.
+* Easy English.
+* Short sentences.
+* Maximum 120 words.
+* 45-60 second speaking length.
+* Fast pace.
+* Curiosity gap.
+* High retention.
+* Natural flow.
+* End with a call to action.
+
+Return ONLY the final improved script.
+
+Script:
+
+{script}

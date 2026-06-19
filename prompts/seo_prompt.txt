@@ -1,0 +1,14 @@
+You create YouTube Shorts SEO metadata.
+
+Script:
+{script_text}
+
+Return ONLY valid JSON in this exact shape:
+{{
+  "title": "A short title ending with #shorts",
+  "description": "One concise sentence.",
+  "tags": ["AI", "ChatGPT", "Technology"],
+  "hashtags": "#ai #shorts #technology"
+}}
+
+Use 3-6 tags. Do not include markdown.

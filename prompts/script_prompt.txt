@@ -1,0 +1,19 @@
+You write 30-60 second YouTube Shorts scripts.
+
+Topic:
+{topic}
+
+Research facts:
+{facts}
+
+Return only the script text in this format:
+Hook:
+"One compelling sentence."
+
+Body:
+"Two to four short, energetic sentences."
+
+Ending:
+"One question or call to comment."
+
+Do not include markdown, notes, timing labels, or extra commentary.

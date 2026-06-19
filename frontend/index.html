@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>social-media-ai</title>
+    <link rel="stylesheet" href="/ui/style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>social-media-ai</h1>
+        <p>Local pipeline monitor</p>
+      </div>
+      <button id="refreshAll" class="secondary">Refresh</button>
+    </header>
+
+    <main class="shell">
+      <section class="panel dashboard">
+        <div class="panel-title">
+          <h2>Dashboard</h2>
+          <span id="healthBadge" class="badge">checking</span>
+        </div>
+        <div class="metrics">
+          <div><span>Ollama</span><strong id="ollamaStatus">-</strong></div>
+          <div><span>Scheduler</span><strong id="schedulerStatus">-</strong></div>
+          <div><span>YouTube</span><strong id="youtubeStatus">-</strong></div>
+          <div><span>Disk</span><strong id="diskUsage">-</strong></div>
+          <div><span>Free</span><strong id="freeSpace">-</strong></div>
+          <div><span>Model</span><strong id="modelName">-</strong></div>
+        </div>
+        <div class="preview-grid">
+          <div>
+            <h3>Latest Thumbnail</h3>
+            <img id="latestThumb" class="thumb-preview" alt="Latest thumbnail">
+          </div>
+          <div>
+            <h3>Latest Video</h3>
+            <video id="latestVideo" class="video-preview" controls></video>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel pipeline">
+        <div class="panel-title">
+          <h2>Pipeline</h2>
+          <span id="actionStatus" class="muted">idle</span>
+        </div>
+        <div class="inputs">
+          <label>Script ID <input id="scriptId" inputmode="numeric" placeholder="1"></label>
+          <label>Audio ID <input id="audioId" inputmode="numeric" placeholder="1"></label>
+          <label>Video ID <input id="videoId" inputmode="numeric" placeholder="1"></label>
+        </div>
+        <div class="actions">
+          <button data-action="topic">Generate Topic</button>
+          <button data-action="script">Generate Script</button>
+          <button data-action="audio">Generate Audio</button>
+          <button data-action="video">Generate Video</button>
+          <button data-action="subtitle">Generate Subtitle</button>
+          <button data-action="seo">Generate SEO</button>
+          <button data-action="thumbnail">Generate Thumbnail</button>
+          <button data-action="publish">Publish YouTube</button>
+          <button data-action="full">Run Full Pipeline</button>
+          <button data-action="daily">Run Daily Jobs</button>
+        </div>
+        <pre id="lastResponse" class="response">{}</pre>
+      </section>
+
+      <section class="panel output">
+        <div class="panel-title">
+          <h2>Output Preview</h2>
+          <span class="muted">latest local state</span>
+        </div>
+        <div class="output-fields">
+          <label>Topic <textarea id="topicOutput" readonly></textarea></label>
+          <label>Script <textarea id="scriptOutput" readonly></textarea></label>
+          <label>SEO Title <textarea id="seoTitleOutput" readonly></textarea></label>
+          <label>Metadata JSON <textarea id="metadataOutput" readonly></textarea></label>
+        </div>
+      </section>
+
+      <section class="panel logs">
+        <div class="panel-title">
+          <h2>Logs</h2>
+          <span class="muted">auto refresh 10s</span>
+        </div>
+        <div id="logTabs" class="tabs"></div>
+        <pre id="logOutput" class="log-output">Loading logs...</pre>
+      </section>
+    </main>
+
+    <script src="/ui/app.js"></script>
+  </body>
+</html>
