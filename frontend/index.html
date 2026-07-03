@@ -12,7 +12,18 @@
         <h1>social-media-ai</h1>
         <p>Local pipeline monitor</p>
       </div>
-      <button id="refreshAll" class="secondary">Refresh</button>
+      <div class="topbar-actions">
+        <div id="authPanel" class="auth-panel signed-out">
+          <img id="authAvatar" class="auth-avatar" alt="">
+          <div class="auth-copy">
+            <strong id="authName">Signed out</strong>
+            <span id="authEmail">Google authentication inactive</span>
+          </div>
+          <a id="loginGoogle" class="button-link" href="/auth/login">Login with Google</a>
+          <button id="logoutGoogle" class="secondary" type="button">Logout</button>
+        </div>
+        <button id="refreshAll" class="secondary">Refresh</button>
+      </div>
     </header>
 
     <main class="shell">
@@ -25,9 +36,16 @@
           <div><span>Ollama</span><strong id="ollamaStatus">-</strong></div>
           <div><span>Scheduler</span><strong id="schedulerStatus">-</strong></div>
           <div><span>YouTube</span><strong id="youtubeStatus">-</strong></div>
+          <div><span>YouTube Channel</span><strong id="youtubeConnectionStatus">-</strong></div>
           <div><span>Disk</span><strong id="diskUsage">-</strong></div>
           <div><span>Free</span><strong id="freeSpace">-</strong></div>
           <div><span>Model</span><strong id="modelName">-</strong></div>
+          <div><span>Auth</span><strong id="authStatus">-</strong></div>
+          <div><span>Research Score</span><strong id="researchScore">-</strong></div>
+          <div><span>Script Score</span><strong id="scriptScore">-</strong></div>
+          <div><span>Accepted</span><strong id="scriptAccepted">-</strong></div>
+          <div><span>Regenerated</span><strong id="scriptRegenerated">-</strong></div>
+          <div><span>Attempts</span><strong id="scriptAttempts">-</strong></div>
         </div>
         <div class="preview-grid">
           <div>
@@ -38,6 +56,170 @@
             <h3>Latest Video</h3>
             <video id="latestVideo" class="video-preview" controls></video>
           </div>
+        </div>
+        <div class="youtube-connection">
+          <div class="panel-title compact">
+            <h3>YouTube Channel</h3>
+            <span id="youtubeConnectionBadge" class="muted">-</span>
+          </div>
+          <div class="youtube-channel">
+            <img id="youtubeChannelThumb" class="auth-avatar channel-avatar" alt="">
+            <div>
+              <strong id="youtubeChannelName">Disconnected</strong>
+              <span id="youtubeChannelId" class="muted">No channel connected</span>
+            </div>
+            <a id="connectYoutube" class="button-link" href="/youtube/connect">Connect YouTube</a>
+            <button id="disconnectYoutube" class="secondary" type="button">Disconnect</button>
+          </div>
+          <div class="verification-grid">
+            <div><span>Subscribers</span><strong id="youtubeSubscribers">-</strong></div>
+            <div><span>Videos</span><strong id="youtubeVideos">-</strong></div>
+            <div><span>Country</span><strong id="youtubeCountry">-</strong></div>
+            <div><span>Language</span><strong id="youtubeLanguage">-</strong></div>
+          </div>
+        </div>
+        <div class="research-intelligence">
+          <div class="panel-title compact">
+            <h3>Research Intelligence</h3>
+            <span id="competitorCount" class="muted">0 competitors</span>
+          </div>
+          <div class="intel-score">
+            <span>Originality Score</span>
+            <strong id="originalityScore">-</strong>
+          </div>
+          <label>Chosen Video Angle <textarea id="chosenVideoAngle" readonly></textarea></label>
+          <label>Missing Angles <textarea id="missingAngles" readonly></textarea></label>
+        </div>
+        <div class="fact-verification">
+          <div class="panel-title compact">
+            <h3>Fact Verification</h3>
+            <span id="verificationFallback" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Overall Confidence</span><strong id="overallConfidence">-</strong></div>
+            <div><span>Claims Verified</span><strong id="claimsVerified">-</strong></div>
+            <div><span>Claims Rejected</span><strong id="claimsRejected">-</strong></div>
+            <div><span>Sources Checked</span><strong id="sourcesChecked">-</strong></div>
+          </div>
+        </div>
+        <div class="hook-intelligence">
+          <div class="panel-title compact">
+            <h3>Hook Intelligence</h3>
+            <span id="hookType" class="muted">-</span>
+          </div>
+          <div class="intel-score">
+            <span>Overall Score</span>
+            <strong id="hookOverallScore">-</strong>
+          </div>
+          <label>Selected Hook <textarea id="selectedHook" readonly></textarea></label>
+          <label>Top 3 Hooks <textarea id="topHooks" readonly></textarea></label>
+        </div>
+        <div class="content-intelligence">
+          <div class="panel-title compact">
+            <h3>Content Intelligence</h3>
+            <span id="dropRisk" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Retention</span><strong id="retentionScore">-</strong></div>
+            <div><span>Opening</span><strong id="openingStrength">-</strong></div>
+            <div><span>Story Flow</span><strong id="storyFlow">-</strong></div>
+            <div><span>Curiosity</span><strong id="curiosityGap">-</strong></div>
+            <div><span>Pace</span><strong id="paceScore">-</strong></div>
+            <div><span>Ending</span><strong id="endingStrength">-</strong></div>
+          </div>
+          <label>Top Improvements <textarea id="contentImprovements" readonly></textarea></label>
+        </div>
+        <div class="thumbnail-intelligence">
+          <div class="panel-title compact">
+            <h3>Thumbnail Intelligence</h3>
+            <span id="thumbnailAccepted" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Overall</span><strong id="thumbnailOverall">-</strong></div>
+            <div><span>CTR Prediction</span><strong id="thumbnailCtr">-</strong></div>
+            <div><span>Curiosity</span><strong id="thumbnailCuriosity">-</strong></div>
+            <div><span>Emotion</span><strong id="thumbnailEmotion">-</strong></div>
+            <div><span>Contrast</span><strong id="thumbnailContrast">-</strong></div>
+            <div><span>Readability</span><strong id="thumbnailReadability">-</strong></div>
+            <div><span>Mobile Visibility</span><strong id="thumbnailMobile">-</strong></div>
+            <div><span>Attempts</span><strong id="thumbnailAttempts">-</strong></div>
+          </div>
+          <label>Top Improvements <textarea id="thumbnailImprovements" readonly></textarea></label>
+        </div>
+        <div class="seo-intelligence">
+          <div class="panel-title compact">
+            <h3>SEO Intelligence</h3>
+            <span id="seoAccepted" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Overall Score</span><strong id="seoOverall">-</strong></div>
+            <div><span>Title</span><strong id="seoTitleScore">-</strong></div>
+            <div><span>CTR Prediction</span><strong id="seoCtr">-</strong></div>
+            <div><span>Search Intent</span><strong id="seoSearchIntent">-</strong></div>
+            <div><span>Keywords</span><strong id="seoKeywords">-</strong></div>
+            <div><span>Competition</span><strong id="seoCompetition">-</strong></div>
+            <div><span>Description</span><strong id="seoDescriptionScore">-</strong></div>
+            <div><span>Tags</span><strong id="seoTagsScore">-</strong></div>
+            <div><span>Attempts</span><strong id="seoAttempts">-</strong></div>
+          </div>
+          <label>Top Recommendations <textarea id="seoRecommendations" readonly></textarea></label>
+        </div>
+        <div class="viral-prediction">
+          <div class="panel-title compact">
+            <h3>Viral Prediction</h3>
+            <span id="viralRecommendation" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Viral Score</span><strong id="viralScore">-</strong></div>
+            <div><span>Predicted CTR</span><strong id="viralCtr">-</strong></div>
+            <div><span>Predicted Retention</span><strong id="viralRetention">-</strong></div>
+            <div><span>Confidence</span><strong id="viralConfidence">-</strong></div>
+          </div>
+          <label>Top Reasons <textarea id="viralReasons" readonly></textarea></label>
+          <label>Top Improvements <textarea id="viralImprovements" readonly></textarea></label>
+        </div>
+        <div class="publisher-decision">
+          <div class="panel-title compact">
+            <h3>Publisher Decision</h3>
+            <span id="publisherRecommendation" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Overall Score</span><strong id="publisherOverall">-</strong></div>
+            <div><span>Confidence</span><strong id="publisherConfidence">-</strong></div>
+            <div><span>Risk</span><strong id="publisherRisk">-</strong></div>
+            <div><span>Expected Views</span><strong id="publisherViews">-</strong></div>
+            <div><span>Expected CTR</span><strong id="publisherCtr">-</strong></div>
+            <div><span>Expected Retention</span><strong id="publisherRetention">-</strong></div>
+            <div><span>Publish Time</span><strong id="publisherTime">-</strong></div>
+          </div>
+          <label>Strengths <textarea id="publisherStrengths" readonly></textarea></label>
+          <label>Weaknesses <textarea id="publisherWeaknesses" readonly></textarea></label>
+          <label>Improvements <textarea id="publisherImprovements" readonly></textarea></label>
+        </div>
+        <div class="youtube-upload">
+          <div class="panel-title compact">
+            <h3>YouTube Upload</h3>
+            <span id="uploadStatus" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Progress</span><strong id="uploadProgress">-</strong></div>
+            <div><span>Upload Time</span><strong id="uploadTime">-</strong></div>
+            <div><span>Processing</span><strong id="processingStatus">-</strong></div>
+          </div>
+          <label>Video URL <textarea id="youtubeVideoUrl" readonly></textarea></label>
+          <a id="openYoutube" class="button-link" href="#" target="_blank" rel="noreferrer">Open on YouTube</a>
+        </div>
+        <div class="creative-versions">
+          <div class="panel-title compact">
+            <h3>Creative Versions</h3>
+            <span id="versionCount" class="muted">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Winner</span><strong id="versionWinner">-</strong></div>
+            <div><span>Best Hook</span><strong id="versionBestHook">-</strong></div>
+          </div>
+          <label>Version Scores <textarea id="versionScores" readonly></textarea></label>
+          <label>Reason <textarea id="versionReason" readonly></textarea></label>
         </div>
       </section>
 
@@ -60,8 +242,28 @@
           <button data-action="seo">Generate SEO</button>
           <button data-action="thumbnail">Generate Thumbnail</button>
           <button data-action="publish">Publish YouTube</button>
-          <button data-action="full">Run Full Pipeline</button>
+          <button data-action="full">Run Complete Pipeline</button>
           <button data-action="daily">Run Daily Jobs</button>
+        </div>
+        <div class="pipeline-progress">
+          <div class="panel-title compact">
+            <h3>Pipeline Progress</h3>
+            <span id="pipelineProgress">-</span>
+          </div>
+          <div class="verification-grid">
+            <div><span>Status</span><strong id="pipelineStatus">-</strong></div>
+            <div><span>Stage</span><strong id="pipelineStage">-</strong></div>
+            <div><span>Runtime</span><strong id="pipelineRuntime">-</strong></div>
+            <div><span>Errors</span><strong id="pipelineErrors">-</strong></div>
+          </div>
+          <label>Latest Report <textarea id="pipelineReportOutput" readonly></textarea></label>
+        </div>
+        <div class="pipeline-history">
+          <div class="panel-title compact">
+            <h3>Pipeline History</h3>
+            <span class="muted">latest runs</span>
+          </div>
+          <pre id="pipelineHistoryOutput" class="response">No runs yet.</pre>
         </div>
         <pre id="lastResponse" class="response">{}</pre>
       </section>

@@ -7,4 +7,4 @@ class YouTubePublishRequest(BaseModel):
 
 class YouTubePublishResponse(BaseModel):
     status: str = Field(min_length=1)
-    youtube_url: str = Field(min_length=1)
+    youtube_url: str = ""

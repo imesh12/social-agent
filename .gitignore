@@ -1,15 +1,33 @@
+# Python
 .venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Environment
 .env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
 storage/*.db
 storage/*.db-*
+
+# Generated media
 storage/audio/*.mp3
 storage/videos/*.mp4
 storage/subtitles/*.srt
 storage/thumbnails/*.jpg
 storage/uploads/*.json
-storage/logs/*.log
-storage/generated/*.json
+storage/generated/
 storage/temp/*
+storage/logs/*.log
+
+# Python cache
+*.log

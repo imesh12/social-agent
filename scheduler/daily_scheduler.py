@@ -47,7 +47,9 @@ def scheduler_snapshot(scheduler: AsyncIOScheduler) -> dict[str, object]:
 
 def _job_manager() -> JobManager:
     db = SessionLocal()
-    return JobManager(db=db, manager_factory=build_manager_agent)
+    manager = JobManager(db=db, manager_factory=build_manager_agent)
+    manager.pipeline_state.recover_stale_running()
+    return manager
 
 
 async def _generate_scripts_job() -> None:

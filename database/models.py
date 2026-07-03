@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from enum import StrEnum
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, Enum, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.database import Base
@@ -38,6 +38,42 @@ class ScheduledJobStatus(StrEnum):
     FAILED = "failed"
 
 
+class PipelineStage(StrEnum):
+    NEW = "new"
+    RESEARCHING = "researching"
+    RESEARCH_READY = "research_ready"
+    SCRIPT_GENERATING = "script_generating"
+    SCRIPT_READY = "script_ready"
+    AUDIO_GENERATING = "audio_generating"
+    AUDIO_READY = "audio_ready"
+    VIDEO_GENERATING = "video_generating"
+    VIDEO_READY = "video_ready"
+    SUBTITLE_GENERATING = "subtitle_generating"
+    SUBTITLE_READY = "subtitle_ready"
+    THUMBNAIL_GENERATING = "thumbnail_generating"
+    THUMBNAIL_READY = "thumbnail_ready"
+    SEO_GENERATING = "seo_generating"
+    SEO_READY = "seo_ready"
+    READY_FOR_UPLOAD = "ready_for_upload"
+    UPLOADING = "uploading"
+    VERIFYING_UPLOAD = "verifying_upload"
+    PUBLISHED = "published"
+    FAILED = "failed"
+    RETRYING = "retrying"
+    CANCELLED = "cancelled"
+
+
+class PipelineTaskStatus(StrEnum):
+    PENDING = "pending"
+    RUNNING = "running"
+    READY = "ready"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    RETRYING = "retrying"
+    CANCELLED = "cancelled"
+    INTERRUPTED = "interrupted"
+
+
 class Topic(Base):
     __tablename__ = "topics"
 
@@ -59,6 +95,9 @@ class Topic(Base):
     scripts: Mapped[list["Script"]] = relationship(
         back_populates="topic",
         cascade="all, delete-orphan",
+    )
+    pipeline_tasks: Mapped[list["PipelineTask"]] = relationship(
+        back_populates="topic",
     )
 
 
@@ -140,6 +179,9 @@ class Video(Base):
     thumbnails: Mapped[list["Thumbnail"]] = relationship(
         back_populates="video",
         cascade="all, delete-orphan",
+    )
+    pipeline_tasks: Mapped[list["PipelineTask"]] = relationship(
+        back_populates="video",
     )
 
 
@@ -237,3 +279,46 @@ class ScheduledJob(Base):
         nullable=False,
     )
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class PipelineTask(Base):
+    __tablename__ = "pipeline_tasks"
+    __table_args__ = (
+        UniqueConstraint("task_uuid", name="uq_pipeline_tasks_task_uuid"),
+        Index("ix_pipeline_tasks_stage_status", "current_stage", "status"),
+        Index("ix_pipeline_tasks_updated_at", "updated_at"),
+        Index("ix_pipeline_tasks_topic_stage", "topic_id", "current_stage"),
+        Index("ix_pipeline_tasks_video_stage", "video_id", "current_stage"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    task_uuid: Mapped[str] = mapped_column(String(64), nullable=False)
+    topic_id: Mapped[int | None] = mapped_column(ForeignKey("topics.id"), nullable=True, index=True)
+    video_id: Mapped[int | None] = mapped_column(ForeignKey("videos.id"), nullable=True, index=True)
+    current_stage: Mapped[PipelineStage] = mapped_column(
+        Enum(PipelineStage),
+        default=PipelineStage.NEW,
+        nullable=False,
+        index=True,
+    )
+    status: Mapped[PipelineTaskStatus] = mapped_column(
+        Enum(PipelineTaskStatus),
+        default=PipelineTaskStatus.PENDING,
+        nullable=False,
+        index=True,
+    )
+    retry_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    worker_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    last_traceback: Mapped[str | None] = mapped_column(Text, nullable=True)
+    metadata_json: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+
+    topic: Mapped[Topic | None] = relationship(back_populates="pipeline_tasks")
+    video: Mapped[Video | None] = relationship(back_populates="pipeline_tasks")

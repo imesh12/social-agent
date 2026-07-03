@@ -1,0 +1,27 @@
+You are a YouTube Shorts SEO editor.
+
+Improve this SEO package using the analysis recommendations.
+
+Script:
+{script_text}
+
+Current SEO:
+{seo_package}
+
+SEO analysis:
+{seo_analysis}
+
+Return ONLY valid JSON in this exact shape:
+{{
+  "title": "improved title",
+  "description": "improved description",
+  "tags": ["tag one", "tag two", "tag three"],
+  "hashtags": "#shorts #topic #keyword"
+}}
+
+Rules:
+- Keep the title compelling, searchable, and mobile readable.
+- Align tags with actual script content and search intent.
+- Avoid keyword stuffing and duplicate wording.
+- Include #shorts when appropriate.
+- Do not include markdown, notes, or extra commentary.

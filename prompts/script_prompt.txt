@@ -1,19 +1,34 @@
-You write 30-60 second YouTube Shorts scripts.
+You are an experienced YouTube Shorts scriptwriter.
 
-Topic:
-{topic}
+Use this research package:
+{research_package}
 
-Research facts:
-{facts}
+Write one spoken narration script for a 45-60 second YouTube Short.
 
-Return only the script text in this format:
-Hook:
-"One compelling sentence."
+Use competitor_analysis.unique_video_angle as the primary creative direction. Avoid repeating competitor titles, hooks, or wording. Use missing_angles to make the video feel more original while staying factual.
 
-Body:
-"Two to four short, energetic sentences."
+Prefer fact_verification.verified_claims over raw interesting_facts. Do not use rejected_claims. Mention confidence only when it helps the viewer understand uncertainty. Never invent statistics, dates, rankings, or source names.
 
-Ending:
-"One question or call to comment."
+The first sentence must begin with selected_hook exactly. Do not rewrite the selected hook unless grammar makes it impossible. Use top_hooks and selection_reason only as creative context.
 
-Do not include markdown, notes, timing labels, or extra commentary.
+Structure the script by intent:
+- 0-3 sec: strong curiosity hook.
+- 3-10 sec: introduce the problem or question.
+- 10-40 sec: explain the main idea.
+- 40-55 sec: give one interesting takeaway.
+- 55-60 sec: end with a natural CTA.
+
+Requirements:
+- Under 120 words.
+- Simple conversational English.
+- Short sentences.
+- One core idea only.
+- No filler.
+- No repetition.
+- No robotic or generic wording.
+- Fast pace with a curiosity gap.
+- Optimized for spoken narration and Shorts retention.
+- First sentence begins with selected_hook.
+
+Return only the final script text.
+Do not include markdown, timing labels, notes, or extra commentary.

@@ -23,6 +23,7 @@ from services.google_trends_service import GoogleTrendsService
 from services.image_service import ImageService
 from services.reddit_service import RedditService
 from services.subtitle_service import SubtitleService
+from services.thumbnail_intelligence_service import ThumbnailIntelligenceResult, ThumbnailIntelligenceService
 from services.thumbnail_service import ThumbnailService
 from services.tts_service import TTSService
 from services.youtube_service import YouTubeService
@@ -66,6 +67,38 @@ def create_video() -> Video:
         db.close()
 
 
+class CountingThumbnailService(ThumbnailService):
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def generate_thumbnail(self, output_path: str, width: int = 1280, height: int = 720) -> None:
+        self.calls += 1
+        super().generate_thumbnail(output_path=output_path, width=width, height=height)
+
+
+def thumbnail_score(score: int) -> ThumbnailIntelligenceResult:
+    return ThumbnailIntelligenceResult(
+        overall_score=score,
+        ctr_prediction=score,
+        curiosity_score=score,
+        emotion_score=score,
+        contrast_score=score,
+        visual_clarity=score,
+        mobile_visibility=score,
+        text_readability=score,
+        subject_focus=score,
+        brand_consistency=score,
+        recommended_changes=["increase subject focus"],
+        strengths=["clear text"],
+        weaknesses=["needs more contrast"],
+        regeneration_attempt=0,
+        accepted=score >= 85,
+        selected_thumbnail_path="",
+        analysis_timestamp="2026-06-30T00:00:00+00:00",
+        fallback_used=False,
+    )
+
+
 def test_generate_thumbnail() -> None:
     app.dependency_overrides[get_manager_agent] = override_manager_agent
     try:
@@ -101,3 +134,76 @@ def test_generate_thumbnail_returns_404_for_missing_video() -> None:
         assert response.json()["detail"] == "Video 999999 was not found"
     finally:
         app.dependency_overrides.clear()
+
+
+def test_thumbnail_agent_regenerates_when_score_is_low() -> None:
+    video = create_video()
+    thumbnail_service = CountingThumbnailService()
+    llm = FakeLLMService(thumbnail_score_sequence=[thumbnail_score(70), thumbnail_score(90)])
+    intelligence_service = ThumbnailIntelligenceService(llm_service=llm)
+
+    db = SessionLocal()
+    try:
+        agent = ThumbnailAgent(
+            db=db,
+            thumbnail_service=thumbnail_service,
+            thumbnail_intelligence_service=intelligence_service,
+        )
+        thumbnail = agent.generate_thumbnail(video_id=video.id)
+
+        metadata = agent.metadata_service.load_thumbnail_intelligence(video.id)
+        assert thumbnail_service.calls == 2
+        assert thumbnail.path == f"storage/thumbnails/thumb_{video.id}.jpg"
+        assert metadata["overall_score"] == 90
+        assert metadata["regeneration_attempt"] == 1
+        assert metadata["accepted"] is True
+    finally:
+        db.close()
+
+
+def test_thumbnail_agent_respects_max_attempts_and_selects_highest_score() -> None:
+    video = create_video()
+    thumbnail_service = CountingThumbnailService()
+    llm = FakeLLMService(thumbnail_score_sequence=[thumbnail_score(70), thumbnail_score(80), thumbnail_score(75)])
+    intelligence_service = ThumbnailIntelligenceService(llm_service=llm)
+
+    db = SessionLocal()
+    try:
+        agent = ThumbnailAgent(
+            db=db,
+            thumbnail_service=thumbnail_service,
+            thumbnail_intelligence_service=intelligence_service,
+        )
+        agent.generate_thumbnail(video_id=video.id)
+
+        metadata = agent.metadata_service.load_thumbnail_intelligence(video.id)
+        assert thumbnail_service.calls == 3
+        assert metadata["overall_score"] == 80
+        assert metadata["regeneration_attempt"] == 1
+        assert metadata["accepted"] is False
+    finally:
+        db.close()
+
+
+def test_thumbnail_agent_fails_soft_when_intelligence_fails() -> None:
+    video = create_video()
+    thumbnail_service = CountingThumbnailService()
+    intelligence_service = ThumbnailIntelligenceService(
+        llm_service=FakeLLMService(fail_thumbnail_intelligence=True)
+    )
+
+    db = SessionLocal()
+    try:
+        agent = ThumbnailAgent(
+            db=db,
+            thumbnail_service=thumbnail_service,
+            thumbnail_intelligence_service=intelligence_service,
+        )
+        thumbnail = agent.generate_thumbnail(video_id=video.id)
+
+        metadata = agent.metadata_service.load_thumbnail_intelligence(video.id)
+        assert Path(thumbnail.path).exists()
+        assert metadata["fallback_used"] is True
+        assert metadata["recommended_changes"]
+    finally:
+        db.close()

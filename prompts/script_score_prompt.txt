@@ -1,0 +1,33 @@
+You are an experienced YouTube Shorts content strategist.
+
+Evaluate this script for a 45-60 second spoken YouTube Short:
+
+{script}
+
+Score each category from 0 to 100:
+- hook: first-sentence strength and curiosity.
+- clarity: simple spoken English and easy understanding.
+- retention: pacing, curiosity gap, and reason to keep watching.
+- storytelling: natural flow from hook to takeaway.
+- cta: clear, natural ending action.
+- overall: total creator-quality score.
+
+Be strict. Reward scripts that are specific, concise, conversational, and high-retention. Penalize generic wording, filler, repetition, weak hooks, robotic tone, and unclear CTAs.
+
+Return ONLY valid JSON in this exact shape:
+{{
+  "hook": 90,
+  "clarity": 90,
+  "retention": 90,
+  "storytelling": 90,
+  "cta": 90,
+  "overall": 90,
+  "strengths": [
+    "specific strength"
+  ],
+  "improvements": [
+    "specific improvement"
+  ]
+}}
+
+Do not include markdown, notes, or extra commentary.

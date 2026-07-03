@@ -31,6 +31,21 @@ class Settings(BaseSettings):
         default="storage/uploads/youtube_token.json",
         alias="YOUTUBE_TOKEN_FILE",
     )
+    youtube_oauth_connection_file: str = Field(
+        default="storage/uploads/youtube_connection.json",
+        alias="YOUTUBE_OAUTH_CONNECTION_FILE",
+    )
+    session_secret_key: str = Field(default="change-me-local-session-secret", alias="SESSION_SECRET_KEY")
+    google_oauth_client_id: str | None = Field(default=None, alias="GOOGLE_OAUTH_CLIENT_ID")
+    google_oauth_client_secret: str | None = Field(default=None, alias="GOOGLE_OAUTH_CLIENT_SECRET")
+    google_oauth_redirect_uri: str | None = Field(default=None, alias="GOOGLE_OAUTH_REDIRECT_URI")
+    youtube_oauth_redirect_uri: str | None = Field(default=None, alias="YOUTUBE_OAUTH_REDIRECT_URI")
+    google_oauth_scopes: str = Field(default="openid email profile", alias="GOOGLE_OAUTH_SCOPES")
+    pipeline_worker_id: str = Field(default="local-worker", alias="PIPELINE_WORKER_ID")
+    pipeline_stale_timeout_seconds: int = Field(default=3600, alias="PIPELINE_STALE_TIMEOUT_SECONDS")
+    pipeline_max_retries: int = Field(default=3, alias="PIPELINE_MAX_RETRIES")
+    pipeline_retry_initial_delay_seconds: int = Field(default=60, alias="PIPELINE_RETRY_INITIAL_DELAY_SECONDS")
+    pipeline_retry_backoff_multiplier: int = Field(default=3, alias="PIPELINE_RETRY_BACKOFF_MULTIPLIER")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

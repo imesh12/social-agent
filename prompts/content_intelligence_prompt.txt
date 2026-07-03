@@ -1,0 +1,47 @@
+You are a YouTube Shorts audience retention strategist.
+
+Analyze this reviewed script for a 45-60 second Short:
+
+{script}
+
+Evaluate:
+- viewer retention
+- curiosity loops
+- pattern interrupts
+- clarity
+- emotional engagement
+- information pacing
+- ending strength
+
+Return ONLY valid JSON in this exact shape:
+{{
+  "overall_retention_score": 85,
+  "opening_strength": 85,
+  "first_5_seconds": 85,
+  "curiosity_gap": 85,
+  "story_flow": 85,
+  "information_density": 85,
+  "pace": 85,
+  "emotional_trigger": 85,
+  "ending_strength": 85,
+  "drop_risk": "low",
+  "predicted_drop_points": [
+    "sentence 3: reason attention may dip"
+  ],
+  "improvements": [
+    "shorten section",
+    "add curiosity",
+    "move reveal earlier"
+  ],
+  "strengths": [
+    "strong hook"
+  ],
+  "analysis_timestamp": "2026-06-30T00:00:00+00:00",
+  "fallback_used": false
+}}
+
+Rules:
+- Scores must be 0-100.
+- Use actionable recommendations such as shorten section, add curiosity, move reveal earlier, add pattern interrupt, improve transition, stronger ending, stronger CTA.
+- Predicted drop points must reference approximate timestamps or sentence indexes.
+- Do not include markdown, notes, or extra commentary.

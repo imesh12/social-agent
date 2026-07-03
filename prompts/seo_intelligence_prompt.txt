@@ -1,0 +1,59 @@
+You are a YouTube Shorts SEO strategist.
+
+Evaluate this SEO package using modern YouTube SEO best practices.
+
+Script:
+{script_text}
+
+SEO package:
+{seo_package}
+
+Score:
+- search intent
+- keyword relevance
+- keyword placement
+- CTR potential
+- title quality
+- description quality
+- tags
+- hashtags
+- competition
+- engagement
+- readability
+- brand consistency
+- duplicate wording
+- spam risk
+- mobile readability
+- length optimization
+
+Return ONLY valid JSON in this exact shape:
+{{
+  "overall_score": 88,
+  "title_score": 88,
+  "description_score": 86,
+  "keyword_score": 87,
+  "tag_score": 85,
+  "hashtag_score": 86,
+  "search_intent_score": 88,
+  "ctr_prediction": 87,
+  "competition_level": "medium",
+  "readability_score": 90,
+  "engagement_score": 84,
+  "recommended_title": "Top 3 AI Tools You Need In 2026 #shorts",
+  "recommended_description": "Discover AI tools changing productivity.",
+  "recommended_tags": ["AI", "ChatGPT", "Technology"],
+  "recommended_hashtags": "#ai #shorts #technology",
+  "strengths": ["clear search intent"],
+  "weaknesses": ["title could be more specific"],
+  "recommended_changes": ["make title more specific", "reduce duplicate wording"],
+  "accepted": true,
+  "attempt": 0,
+  "analysis_timestamp": "2026-06-30T00:00:00+00:00",
+  "fallback_used": false
+}}
+
+Rules:
+- Scores must be 0-100.
+- Penalize spammy tags, vague titles, duplicate wording, and poor search intent.
+- Keep recommendations practical and specific.
+- Do not include markdown, notes, or extra commentary.

@@ -1,5 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.staticfiles import StaticFiles
@@ -21,8 +22,11 @@ from agents.trend_agent import TrendAgent
 from agents.video_agent import AudioFileNotFoundError, AudioNotFoundError, VideoAgent
 from agents.voice_agent import ScriptNotFoundError, VoiceAgent
 from backend.config import Settings, get_settings
+from backend.routes.auth import router as auth_router
 from backend.routes.system_health import router as system_health_router
-from database.database import Base, engine, get_db
+from backend.routes.youtube_oauth import router as youtube_oauth_router
+from backend.session import SignedCookieSessionMiddleware
+from database.database import Base, SessionLocal, engine, get_db
 from schemas.publish_schema import YouTubePublishRequest, YouTubePublishResponse
 from schemas.seo_schema import SEOGenerateRequest, SEOGenerateResponse
 from schemas.script_schema import ScriptGenerateResponse
@@ -31,7 +35,10 @@ from schemas.thumbnail_schema import ThumbnailGenerateRequest, ThumbnailGenerate
 from schemas.topic_schema import TopicGenerateResponse
 from schemas.video_schema import VideoGenerateRequest, VideoGenerateResponse
 from schemas.voice_schema import AudioGenerateRequest, AudioGenerateResponse
+from platforms.youtube import YouTubePublisherAdapter
 from services.image_service import ImageService
+from services.pipeline_state_service import PipelineStateMachine
+from services.publisher import PublisherService
 from scheduler.daily_scheduler import create_daily_scheduler, scheduler_snapshot
 from scheduler.job_manager import JobManager
 import json
@@ -66,6 +73,13 @@ async def lifespan(app: FastAPI):
         (settings.storage_dir / child).mkdir(parents=True, exist_ok=True)
     ImageService().ensure_default_background()
     Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        PipelineStateMachine(db).recover_stale_running()
+    finally:
+        db.close()
+    app.state.publisher_service = PublisherService()
+    app.state.publisher_service.register_adapter(YouTubePublisherAdapter(settings=settings))
     app.state.scheduler = create_daily_scheduler()
     app.state.scheduler.start()
     logging.getLogger(__name__).info("Application startup complete")
@@ -74,7 +88,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="social-media-ai", version="0.1.0", lifespan=lifespan)
+app.add_middleware(
+    SignedCookieSessionMiddleware,
+    secret_key=get_settings().session_secret_key,
+    same_site="lax",
+    https_only=False,
+)
+app.include_router(auth_router)
+app.include_router(youtube_oauth_router)
 app.include_router(system_health_router)
+for static_dir in ("storage/logs", "storage/generated", "storage/videos", "storage/thumbnails"):
+    Path(static_dir).mkdir(parents=True, exist_ok=True)
 app.mount("/ui", StaticFiles(directory="frontend", html=True), name="ui")
 app.mount("/storage/logs", StaticFiles(directory="storage/logs"), name="storage_logs")
 app.mount("/storage/generated", StaticFiles(directory="storage/generated"), name="storage_generated")

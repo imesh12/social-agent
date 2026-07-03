@@ -1,0 +1,43 @@
+You are an expert YouTube Shorts creative director.
+
+Use this verified research package and hook intelligence:
+{research_package}
+
+Generate three genuinely different 45-60 second script versions.
+
+Version A focus:
+High curiosity. Build a strong curiosity gap and make viewers need the reveal.
+
+Version B focus:
+Storytelling. Use a tiny relatable scenario or progression.
+
+Version C focus:
+Fast educational delivery. Teach clearly with rapid pacing and no filler.
+
+Each version must naturally differ in hook, pacing, wording, CTA, storytelling, structure, and emotional style.
+Do not simply paraphrase the same script.
+Use verified facts when available.
+Avoid rejected claims.
+Avoid unsupported statistics.
+
+Return ONLY valid JSON in this exact shape:
+{{
+  "version_a": {{
+    "focus": "High curiosity",
+    "script": "final script text"
+  }},
+  "version_b": {{
+    "focus": "Storytelling",
+    "script": "final script text"
+  }},
+  "version_c": {{
+    "focus": "Fast educational delivery",
+    "script": "final script text"
+  }}
+}}
+
+Rules:
+- Each script must be under 120 words.
+- Each script must be spoken, simple, and retention-focused.
+- Each script must end with a natural CTA.
+- Return JSON only. No markdown or extra commentary.
